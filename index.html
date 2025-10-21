@@ -7,14 +7,12 @@
   </head>
   <body>
     <h2>hello</h2>
-    [Desktop Entry]
-Version=1.0
-Type=Application
-Name=Android Studio
-Exec=/home/$USER/Downloads/android-studio/bin/studio.sh
-Icon=/home/$USER/Downloads/android-studio/bin/studio.png
-Categories=Development;IDE;
-Terminal=false
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+
 
   </body>
 </html>
